@@ -36,6 +36,7 @@ import numpy as np
 import pystan.api
 import pystan.misc
 import pystan.diagnostics
+from importlib import import_module
 
 logger = logging.getLogger('pystan')
 
@@ -43,16 +44,7 @@ logger = logging.getLogger('pystan')
 def load_module(module_name, module_path):
     """Load the module named `module_name` from  `module_path`
     independently of the Python version."""
-    if sys.version_info >= (3,0):
-        import pyximport
-        pyximport.install()
-        sys.path.append(module_path)
-        return __import__(module_name)
-    else:
-        import imp
-        module_info = imp.find_module(module_name, [module_path])
-        return imp.load_module(module_name, *module_info)
-
+    return import_module(module_name)
 
 def _map_parallel(function, args, n_jobs):
     """multiprocessing.Pool(processors=n_jobs).map with some error checking"""
